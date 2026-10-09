@@ -34,3 +34,18 @@ test('engineReady needs the install marker for the pinned commit, node_modules a
     assert.equal(engineReady(dir), true);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+
+test('pruneOldEngines removes other versions and stale temp dirs, keeps the pinned one and a live server\'s', async () => {
+  const { pruneOldEngines } = await import('../plugins/waggle/scripts/waggle.mjs');
+  const home = mkdtempSync(join(tmpdir(), 'waggle-home-'));
+  try {
+    const root = join(home, 'engine');
+    for (const n of [ENGINE.version, '0.0.1', '0.0.2', `${ENGINE.version}.tmp-123`]) mkdirSync(join(root, n), { recursive: true });
+    mkdirSync(join(home, 'data'), { recursive: true });
+    writeFileSync(join(home, 'data', 'server.json'), JSON.stringify({ pid: process.pid, version: '0.0.2' }));
+    const removed = pruneOldEngines({ WAGGLE_HOME: home });
+    assert.deepEqual(removed.sort(), ['0.0.1']);   // 0.0.2 is "running"; the fresh .tmp dir is not stale yet
+    writeFileSync(join(home, 'data', 'server.json'), JSON.stringify({ pid: 999999999, version: '0.0.2' }));
+    assert.deepEqual(pruneOldEngines({ WAGGLE_HOME: home }), ['0.0.2']);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});

@@ -23,6 +23,8 @@ Arguments from the user: `$ARGUMENTS`
 Run `… waggle.mjs doctor` (Bash timeout 300000 ms: the first run installs the engine, about a minute — tell the
 user). Then:
 
+- The output is only `{ "error": … }` (for example Node.js too old, git missing, no network for the first
+  install) → show the message, say what to install or fix, and stop.
 - `nodeOk` false or `git` null → tell the user what to install and stop.
 - `keys` is a string ("start the server…") → run `… waggle.mjs server start`, then `doctor` again.
 - `keys.ready` false → explain the two options and stop: set `ANTHROPIC_API_KEY` in the environment, or log in
@@ -53,7 +55,12 @@ they ask. Do not start without a yes.
 
 ## 4. Start and report back
 
-Run `… waggle.mjs scan --path "<dir>" --brief "<brief>"` (or `--repo <url>`). If the output has
+**Quoting:** put every piece of free text (a brief, a question, a scope label) in **single quotes**, and write each
+`'` inside it as `'\''` — for example `--question 'Why does retry() fail when it'\''s offline?'`. Never put user
+text in double quotes: inside double quotes the shell runs backticks and `$( … )`. Paths go in double quotes, with forward slashes on Windows ("C:/Users/me/repo"), so a trailing
+backslash cannot escape the closing quote.
+
+Run `… waggle.mjs scan --path "<dir>" --brief '<brief>'` (or `--repo <url>`). If the output has
 `telemetryNotice`, relay it to the user in one or two sentences, including how to turn it off
 (`… waggle.mjs telemetry off`). Give them the run id and the `consoleUrl` (they can watch it live in the browser).
 
@@ -66,6 +73,8 @@ another background `wait`; if `done`, continue. If the user asks for progress me
 - `status` `error` → show `error` and the last log lines; suggest re-running (a re-run resumes cheaply from what was
   already done only through the console's Resume button — say so).
 - `status` `stopped` → confirm it was stopped and stop.
+- `status` `queued` → another Full Scan is running; this one starts when it ends (one at a time). Tell the user and keep
+  waiting.
 
 ## 6. Present the results
 
@@ -79,7 +88,8 @@ Run `… waggle.mjs result <id>`. Then, in the user's language:
    they are unverified. When there are no findings, these are the main result: never report "nothing found" while
    open questions exist.
 4. Where the full reports are: `files.leadershipReport` (start here), `files.executionReport`, `files.remediation`,
-   and the `consoleUrl`. Offer to open the leadership brief in the browser.
+   and the `consoleUrl`. Offer to open the leadership brief in the browser (`start "" "<file>"` on Windows,
+   `open "<file>"` on macOS, `xdg-open "<file>"` on Linux).
 5. Next step: offer `/waggle:fix <id>` to work through `REMEDIATION.md` on a branch, finding by finding, with their
    approval.
 

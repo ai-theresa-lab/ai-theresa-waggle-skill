@@ -14,14 +14,21 @@ first; command details are in the [CLI reference](${CLAUDE_PLUGIN_ROOT}/referenc
 
 Arguments from the user: `$ARGUMENTS`
 
-1. **Setup.** `… waggle.mjs doctor` (Bash timeout 300000 ms; the first run installs the engine). Handle `nodeOk`,
-   `git` and `keys.ready` exactly as the scan skill does: tell the user what is missing and stop.
+1. **Setup.** `… waggle.mjs doctor` (Bash timeout 300000 ms; the first run installs the engine). Handle an `error`-only
+   output, `nodeOk`, `git` and `keys.ready` exactly as the scan skill does: tell the user what is missing and stop.
 2. **Scope and question.** The target is a public GitHub URL (`--repo`) or a local folder that is or contains a git
    repository (`--path`, absolute); with none given, propose the current project's git root. The question should be
    one concrete question about the code; if it is vague, help the user sharpen it in one exchange.
 3. **Confirm.** One line: "Quick Ask on <target>: about $0.30–1 on your Anthropic account, a few minutes,
    read-only. Start?" Start only on a yes (a request that already says "go ahead" counts).
-4. **Run.** `… waggle.mjs ask --path "<dir>" --question "<question>"`. Relay `telemetryNotice` if present (one or
+4. **Run.** `… waggle.mjs ask --path "<dir>" --question '<question>'`.
+
+   **Quoting:** put every piece of free text (a brief, a question, a scope label) in **single quotes**, and write each
+   `'` inside it as `'\''` — for example `--question 'Why does retry() fail when it'\''s offline?'`. Never put user
+   text in double quotes: inside double quotes the shell runs backticks and `$( … )`. Paths go in double quotes, with forward slashes on Windows ("C:/Users/me/repo"), so a trailing
+   backslash cannot escape the closing quote.
+
+   Relay `telemetryNotice` if present (one or
    two sentences plus `… waggle.mjs telemetry off`).
 5. **Wait.** `… waggle.mjs wait <id> --timeout 540 --log 2` (Bash timeout 600000 ms). Repeat while `timedOut`.
 6. **Answer.** `… waggle.mjs result <id>`. Give the user `answer.text` faithfully, in their language, keeping every

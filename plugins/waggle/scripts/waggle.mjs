@@ -10,15 +10,15 @@
 // `npm ci`. A clone whose commit does not match the pin is refused. Plain JavaScript, Node.js standard library only.
 
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 export const ENGINE = {
-  version: '0.2.2',
-  tag: 'v0.2.2',
-  commit: '11d8003654d70caa0f9479da8b983e1d3bb7ccb5',
+  version: '0.2.3',
+  tag: 'v0.2.3',
+  commit: 'b0cc3d8af3c87e9e6ceee0eb56e86bb2a158b670',
   repo: 'https://github.com/ai-theresa-lab/ai-theresa-waggle.git',
 };
 
@@ -52,13 +52,41 @@ export function engineReady(dir = engineDir()) {
   } catch { return false; }
 }
 
+const LOCK_STALE_MS = 15 * 60 * 1000;
+
+/** Remove other engine versions and leftovers of interrupted installs (~300 MB each). Best-effort: a version whose
+ *  server is still running may be locked on Windows and is then left for the next install. */
+export function pruneOldEngines(env = process.env) {
+  const root = join(waggleHome(env), 'engine');
+  const removed = [];
+  // Keep the version a live server runs from: deleting it mid-scan would break that scan.
+  let keep = null;
+  try {
+    const info = JSON.parse(readFileSync(join(env.THERESA_DATA_DIR || join(waggleHome(env), 'data'), 'server.json'), 'utf8'));
+    process.kill(info.pid, 0);
+    keep = String(info.version);
+  } catch { /* no live server */ }
+  let names = [];
+  try { names = readdirSync(root); } catch { return removed; }
+  for (const name of names) {
+    if (name === ENGINE.version || name === keep || name.startsWith(`${ENGINE.version}.lock`)) continue;
+    const stale = name.includes('.tmp-') ? (() => { try { return Date.now() - statSync(join(root, name)).mtimeMs > LOCK_STALE_MS; } catch { return false; } })() : true;
+    if (!stale) continue;
+    try { rmSync(join(root, name), { recursive: true, force: true }); removed.push(name); } catch { /* in use */ }
+  }
+  return removed;
+}
+
 function install() {
   const dir = engineDir();
   if (engineReady(dir)) return { installed: false, dir };
   if (git(['--version']).status !== 0) throw new Error('git is required — install it from https://git-scm.com/ and retry');
   mkdirSync(join(waggleHome(), 'engine'), { recursive: true });
   const lock = dir + '.lock';
-  try { mkdirSync(lock); } catch { throw new Error(`another install is in progress (${lock}); wait for it, or delete that folder if it is stale`); }
+  // An install killed half-way (a tool timeout, a closed terminal) leaves its lock behind: one older than
+  // LOCK_STALE_MS is taken over instead of blocking every later command.
+  try { if (Date.now() - statSync(lock).mtimeMs > LOCK_STALE_MS) rmSync(lock, { recursive: true, force: true }); } catch { /* no lock */ }
+  try { mkdirSync(lock); } catch { throw new Error(`another Waggle engine install is in progress (started less than 15 minutes ago); wait for it and retry`); }
   const tmp = `${dir}.tmp-${process.pid}`;   // same parent as `dir`, so the final rename never crosses drives
   try {
     note(`installing the Waggle engine ${ENGINE.tag} (one time, about a minute) …`);
@@ -66,11 +94,13 @@ function install() {
     if (clone.status !== 0) throw new Error(`git clone failed: ${(clone.stderr || '').trim().slice(0, 400)}`);
     const head = git(['-C', tmp, 'rev-parse', 'HEAD']).stdout.trim();
     if (head !== ENGINE.commit) throw new Error(`engine ${ENGINE.tag} is at ${head}, expected ${ENGINE.commit} — refusing to run an unexpected build`);
-    const ci = npm(['ci', '--omit=dev', '--no-audit', '--no-fund', '--loglevel=error'], tmp);
+    // --ignore-scripts: no dependency's install script runs (none needs one); the lockfile pins every package by hash.
+    const ci = npm(['ci', '--omit=dev', '--ignore-scripts', '--no-audit', '--no-fund', '--loglevel=error'], tmp);
     if (ci.status !== 0) throw new Error(`npm ci failed: ${(ci.stderr || ci.stdout || '').trim().slice(-600)}`);
     writeFileSync(join(tmp, '.waggle-install.json'), JSON.stringify({ version: ENGINE.version, commit: head, installedAt: new Date().toISOString() }));
     rmSync(dir, { recursive: true, force: true });
     renameSync(tmp, dir);
+    pruneOldEngines();
     return { installed: true, dir };
   } finally {
     rmSync(tmp, { recursive: true, force: true });

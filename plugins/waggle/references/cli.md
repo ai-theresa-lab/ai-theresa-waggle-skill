@@ -24,8 +24,11 @@ you can fix, 1 = unexpected). Progress and the one-time telemetry notice go to s
 - `--repo` takes a public GitHub URL (or `owner/repo`); `--path` takes a local folder that is (or contains) a git
   repository. Both can repeat and mix.
 - `status` values: `queued`, `running`, `complete`, `error`, `stopped`.
-- Stages of a Full Scan, in order: `workspace`, `comprehend`, per-lens `critique` → `preflight` → `expert`,
-  `claim-audit`, `synthesis`, `findings`, `report`.
+- Stages of a Full Scan, in order: `comprehend`, then per lens `critique` → `expert`, then `synthesize`, `findings`,
+  `report`. A `queued` run is waiting for another Full Scan to finish (one runs at a time).
+- `status`, `result` and `runs` include `targets`: `repos` (GitHub `owner/name`) and `folders` (absolute local paths).
+- Free text (`--brief`, `--question`, `--scope`) goes in single quotes, never in double quotes — see the Quoting
+  note in the scan and ask skills.
 
 ## A finding in `result`
 

@@ -11,6 +11,7 @@ allowed-tools:
 
 Launcher: `node "${CLAUDE_PLUGIN_ROOT}/scripts/waggle.mjs"`. Read [the safety rules](${CLAUDE_PLUGIN_ROOT}/references/safety.md)
 first; command details are in the [CLI reference](${CLAUDE_PLUGIN_ROOT}/references/cli.md). Nothing here costs money.
+Give the first command a Bash timeout of 300000 ms: on a new machine it installs the engine first (about a minute).
 
 Arguments from the user: `$ARGUMENTS`
 

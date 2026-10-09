@@ -22,13 +22,17 @@ Arguments from the user: `$ARGUMENTS`
 
 - Find the run: the id from the arguments, or `… waggle.mjs runs --limit 10` and pick the latest complete Full Scan
   (confirm with the user).
-- `… waggle.mjs result <id>` → `findings[]`, `files.remediation`. Read `REMEDIATION.md` for the ordering and the
-  "done when" of each section.
+- `… waggle.mjs result <id>` (Bash timeout 300000 ms for the first command: on a new machine it installs the engine)
+  → `findings[]`, `targets`, `files.remediation`. Read `REMEDIATION.md` for the ordering and the "done when" of each
+  section.
+- No findings? There is nothing to fix from this run. If it has `openQuestions`, offer to look into one of them with
+  the user — as a normal investigation, not as a Waggle fix.
 
 ## 2. Find the code to change
 
-- The fixes go into a **local working copy** of the scanned repository. If the scan used `--path`, that folder; if it
-  used `--repo`, ask where their clone is (do not clone or push on your own).
+- The fixes go into a **local working copy** of the scanned repository: `targets.folders` when the scan read local
+  folders (confirm which one if there are several); for `targets.repos` (GitHub), ask where their clone is (do not
+  clone or push on your own).
 - Check `git status`: if there are uncommitted changes, stop and ask the user to commit or stash them first.
 - Propose a branch name `waggle/fix-<run id>`; create it only after the user agrees.
 
