@@ -1,0 +1,46 @@
+// Structural checks for the plugin's skills: frontmatter, limits from the Agent Skills spec, and that every file a
+// skill links through ${CLAUDE_PLUGIN_ROOT} / ${CLAUDE_SKILL_DIR} exists.
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+const ROOT = join(import.meta.dirname, '..', 'plugins', 'waggle');
+const SKILLS = readdirSync(join(ROOT, 'skills'));
+const ALLOWED_KEYS = new Set(['name', 'description', 'argument-hint', 'disable-model-invocation', 'allowed-tools']);
+
+function frontmatter(text) {
+  const m = /^---\n([\s\S]*?)\n---\n/.exec(text.replace(/\r\n/g, '\n'));
+  assert.ok(m, 'frontmatter block');
+  const keys = {};
+  for (const line of m[1].split('\n')) { const k = /^([a-z-]+):\s*(.*)$/.exec(line); if (k) keys[k[1]] = k[2]; }
+  return { keys, body: text.slice(m[0].length) };
+}
+
+test('the plugin has the four skills', () => {
+  assert.deepEqual(SKILLS.sort(), ['ask', 'fix', 'report', 'scan']);
+});
+
+for (const skill of SKILLS) {
+  test(`skill ${skill}: frontmatter, limits, links`, () => {
+    const text = readFileSync(join(ROOT, 'skills', skill, 'SKILL.md'), 'utf8');
+    const { keys, body } = frontmatter(text);
+    for (const k of Object.keys(keys)) assert.ok(ALLOWED_KEYS.has(k), `unexpected key ${k}`);
+    assert.equal(keys.name, skill);
+    assert.match(keys.name, /^[a-z0-9-]{1,64}$/);
+    assert.doesNotMatch(keys.name, /anthropic|claude/);
+    const desc = JSON.parse(keys.description);
+    assert.ok(desc.length > 50 && desc.length <= 1024, `description length ${desc.length}`);
+    assert.ok(body.split('\n').length < 500, 'body under 500 lines');
+    assert.match(text, /safety\.md/, 'every skill points at the safety rules');
+    for (const m of text.matchAll(/\$\{CLAUDE_PLUGIN_ROOT\}\/([\w./-]+)/g)) assert.ok(existsSync(join(ROOT, m[1])), `missing ${m[1]}`);
+    assert.doesNotMatch(text, /[㐀-鿿]/, 'English only');
+  });
+}
+
+test('the costly skills only run when the user invokes them', () => {
+  for (const s of ['scan', 'fix']) {
+    const { keys } = frontmatter(readFileSync(join(ROOT, 'skills', s, 'SKILL.md'), 'utf8'));
+    assert.equal(keys['disable-model-invocation'], 'true', s);
+  }
+});

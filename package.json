@@ -1,0 +1,12 @@
+{
+  "name": "ai-theresa-waggle-skill",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI Theresa Waggle as a Claude Code plugin (skills: scan, ask, report, fix).",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": { "node": ">=22.7" },
+  "scripts": {
+    "test": "node --test \"test/*.test.mjs\""
+  }
+}

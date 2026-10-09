@@ -1,0 +1,35 @@
+name: Test
+
+# Launcher + skill structure checks, manifest validation, and a real engine install on Linux, macOS and Windows.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+      - name: Unit tests
+        run: npm test
+      - name: Install the pinned engine and run doctor
+        shell: bash
+        env:
+          WAGGLE_HOME: ${{ runner.temp }}/waggle
+          THERESA_TELEMETRY: '0'
+        run: |
+          node plugins/waggle/scripts/waggle.mjs setup
+          node plugins/waggle/scripts/waggle.mjs doctor
+          node plugins/waggle/scripts/waggle.mjs server stop
