@@ -16,9 +16,9 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 export const ENGINE = {
-  version: '0.2.0',
-  tag: 'v0.2.0',
-  commit: 'bc79aef0979c3083828632c8ae69b61fa17078d9',
+  version: '0.2.2',
+  tag: 'v0.2.2',
+  commit: '11d8003654d70caa0f9479da8b983e1d3bb7ccb5',
   repo: 'https://github.com/ai-theresa-lab/ai-theresa-waggle.git',
 };
 

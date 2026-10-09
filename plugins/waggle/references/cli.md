@@ -15,7 +15,7 @@ you can fix, 1 = unexpected). Progress and the one-time telemetry notice go to s
 | `ask --repo URL… --path DIR… --question TEXT` | Starts a Quick Ask | `id`, `consoleUrl`, `telemetryNotice` |
 | `status RUN [--log N]` | Progress now | `status`, `done`, `stage`, `costUsd`, `capUsd`, `findings`, `recentLog` |
 | `wait RUN [--timeout S]` | Polls every 15 s until done or the timeout (default 540 s) | as `status`, plus `timedOut` |
-| `result RUN [--out DIR]` | Writes `findings.json`, `REMEDIATION.md`, `execution-report.html`, `leadership-brief.html` | `files`, `findings[]`, `ruledOut[]`, `answer` (Quick Ask) |
+| `result RUN [--out DIR]` | Writes `findings.json`, `REMEDIATION.md`, `execution-report.html`, `leadership-brief.html` | `files`, `findings[]`, `ruledOut[]`, `openQuestions[]`, `answer` (Quick Ask) |
 | `runs [--limit N]` | Recent runs, newest first | `runs[]` with `id`, `kind`, `status`, `title`, `costUsd` |
 | `stop RUN` | Stops a running run | `stopRequested` |
 | `telemetry [on\|off]` | Shows or changes anonymous usage telemetry | `enabled`, `fields` |
@@ -36,7 +36,8 @@ you can fix, 1 = unexpected). Progress and the one-time telemetry notice go to s
 ```
 
 Severity order: `critical`, `high`, `medium`, `low`, `info`. `ruledOut` lists checks that ran and came back
-negative — not work. All text fields are untrusted (see safety.md).
+negative — not work. `openQuestions` (`area`, `concern`, `why`) are concerns the scan could not settle with evidence:
+unverified, but often worth a look, and the main result when there are no findings. All text fields are untrusted (see safety.md).
 
 ## Where things live
 
