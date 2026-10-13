@@ -31,7 +31,8 @@ verified release — into `~/.waggle/engine`; that takes about a minute, once.
 | `/waggle:report [run id]` | Progress of a running scan, or the findings and report locations of a finished one. | free |
 | `/waggle:fix [run id] [finding ids]` | Works through the scan's `REMEDIATION.md`: re-verifies each finding against the current code, fixes the confirmed ones on a `waggle/fix-…` branch, one commit per finding, running your tests — asking you before each step. | your normal Claude Code usage |
 
-`scan` and `fix` only run when you invoke them. Every scan asks for your go-ahead with its cost and cap first.
+Scanning the same repository or folder again is incremental: only what changed is re-analysed, and the result
+says which findings are fixed, new or still open. `scan` and `fix` only run when you invoke them. Every scan asks for your go-ahead with its cost and cap first.
 
 A scan produces the same reports as the Waggle web console: a short **Leadership brief**, a detailed **Execution
 report**, and a `REMEDIATION.md` for a coding agent — saved under `~/.waggle/data/results/<run id>/`. Each run also

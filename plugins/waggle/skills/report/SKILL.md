@@ -20,8 +20,10 @@ Arguments from the user: `$ARGUMENTS`
 - **A running run:** `… waggle.mjs status <id> --log 5`. Report the stage, cost so far against `capUsd`, and the
   console link. Offer to wait for it (background `wait`, as in the scan skill) or to stop it (`stop <id>`, only on
   an explicit request).
-- **A finished run:** `… waggle.mjs result <id>`, then present it the way the scan skill's step 6 does (severity
-  counts, the most severe findings with evidence, open questions, report paths, `/waggle:fix <id>` as the next step). For a Quick
+- **A finished run:** `… waggle.mjs result <id>`, then present it the way the scan skill's step 6 does (an
+  `incomplete` warning first when stages degraded, the comparison with the last scan when `sinceLastScan` is
+  present, severity counts, the most severe findings with evidence, open questions, report paths,
+  `/waggle:fix <id>` as the next step). For a Quick
   Ask, give `answer.text` with its references.
 - **A failed run:** show `error` and the last log lines from `status`; suggest resuming from the console
   (`consoleUrl`, "Resume from checkpoint") or a new scan.
