@@ -44,3 +44,11 @@ test('the costly skills only run when the user invokes them', () => {
     assert.equal(keys['disable-model-invocation'], 'true', s);
   }
 });
+
+test('every skill replies in English by default and in Chinese only when asked in Chinese', () => {
+  for (const s of SKILLS) {
+    const text = readFileSync(join(ROOT, 'skills', s, 'SKILL.md'), 'utf8');
+    assert.match(text, /\*\*Language:\*\* reply in English by default\. Only when the user writes the request in Chinese, reply in Chinese/, s);
+    assert.doesNotMatch(text, /their language|user'?s language|in the user's/i, s);
+  }
+});
