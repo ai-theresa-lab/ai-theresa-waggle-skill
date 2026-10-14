@@ -17,8 +17,8 @@ import { pathToFileURL } from 'node:url';
 
 export const ENGINE = {
   version: '0.2.7',
-  tag: 'release-0.2.7', // TEMPORARY: engine PR #17 is not merged yet; switch to 'v0.2.7' and its main commit before merging
-  commit: 'cb01baa174ca4c54567a6eaf5af03eeef933e125',
+  tag: 'v0.2.7',
+  commit: 'f07eb1a2ee6f91513d14ed3b5d6ad4e7f9cc51f3',
   repo: 'https://github.com/ai-theresa-lab/ai-theresa-waggle.git',
 };
 
