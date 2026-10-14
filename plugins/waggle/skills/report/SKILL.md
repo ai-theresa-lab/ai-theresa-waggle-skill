@@ -15,8 +15,8 @@ Give the first command a Bash timeout of 300000 ms: on a new machine it installs
 
 Arguments from the user: `$ARGUMENTS`
 
-**Language:** write every message of this skill in English — confirmations, progress updates and results —
-whatever language the request is in.
+**Language:** reply in English by default. Only when the user writes the request in Chinese, reply in Chinese
+instead — the same language for every message of this skill: confirmations, progress updates and results.
 
 - **No run id:** `… waggle.mjs runs --limit 10`. Show a short table: id, kind (Full Scan / Quick Ask), status,
   title, cost, when (use `createdLocal` — the machine's local time — not the UTC `createdAt`). With no runs at all,

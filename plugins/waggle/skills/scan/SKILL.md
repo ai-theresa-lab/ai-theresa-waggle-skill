@@ -18,8 +18,8 @@ output fields: [CLI reference](${CLAUDE_PLUGIN_ROOT}/references/cli.md).
 
 Arguments from the user: `$ARGUMENTS`
 
-**Language:** write every message of this skill in English — confirmations, progress updates and results —
-whatever language the request is in.
+**Language:** reply in English by default. Only when the user writes the request in Chinese, reply in Chinese
+instead — the same language for every message of this skill: confirmations, progress updates and results.
 
 ## 1. Check the setup
 
@@ -86,7 +86,7 @@ another background `wait`; if `done`, continue. If the user asks for progress me
 
 ## 6. Present the results
 
-Run `… waggle.mjs result <id>`. Then, in the user's language:
+Run `… waggle.mjs result <id>`. Then, in the reply language above:
 
 0. If `incomplete` is true, say so **first**: some stages (`degraded[].stage`) fell back or failed — often a
    network or model error — so findings may be missing and the result must not be read as "clean". Suggest

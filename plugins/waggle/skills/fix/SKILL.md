@@ -18,8 +18,8 @@ first — this skill edits code, so they matter most here.
 
 Arguments from the user: `$ARGUMENTS`
 
-**Language:** write every message of this skill in English — confirmations, progress updates and results —
-whatever language the request is in.
+**Language:** reply in English by default. Only when the user writes the request in Chinese, reply in Chinese
+instead — the same language for every message of this skill: confirmations, progress updates and results.
 
 ## 1. Load the plan
 
