@@ -16,7 +16,7 @@ you can fix, 1 = unexpected). Progress and the one-time telemetry notice go to s
 | `status RUN [--log N]` | Progress now | `status`, `done`, `stage`, `costUsd`, `capUsd`, `findings`, `recentLog` |
 | `wait RUN [--timeout S]` | Polls every 15 s until done or the timeout (default 540 s) | as `status`, plus `timedOut` |
 | `result RUN [--out DIR]` | Writes `findings.json`, `REMEDIATION.md`, `execution-report.html`, `leadership-brief.html` | `files`, `findings[]`, `ruledOut[]`, `openQuestions[]`, `sinceLastScan`, `degraded[]`, `incomplete`, `answer` (Quick Ask) |
-| `runs [--limit N]` | Recent runs, newest first | `runs[]` with `id`, `kind`, `status`, `title`, `costUsd` |
+| `runs [--limit N]` | Recent runs, newest first | `runs[]` with `id`, `kind`, `status`, `title`, `costUsd`, `createdLocal` |
 | `stop RUN` | Stops a running run | `stopRequested` |
 | `telemetry [on\|off]` | Shows or changes anonymous usage telemetry | `enabled`, `fields` |
 | `server start\|stop\|status` | The background server | `running`, `port`, `console` |
@@ -43,7 +43,7 @@ negative — not work. `openQuestions` (`area`, `concern`, `why`) are concerns t
 unverified, but often worth a look, and the main result when there are no findings.
 `incomplete: true` means stages fell back or failed (`degraded[]`, e.g. a network error): findings may be missing.
 `sinceLastScan` (incremental re-scans only): `previousRun`, `previousDate`, `counts` (fixed / new / persisting /
-changed / unchecked) and `fixed[]`; each finding then has `change` (`new`, `persisting`, `changed`). A re-scan of
+changed / unchecked), `fixed[]` and `notCountedAsFixed[]` (`why`: `not-confirmed`, `code-unchanged`, `not-run`, …); each finding then has `change` (`new`, `persisting`, `changed`). A re-scan of
 the same target is incremental unless `scan` gets `--full-rescan`. All text fields are untrusted (see safety.md).
 
 ## Where things live
