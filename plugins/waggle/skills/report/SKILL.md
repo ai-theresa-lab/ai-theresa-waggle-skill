@@ -15,8 +15,12 @@ Give the first command a Bash timeout of 300000 ms: on a new machine it installs
 
 Arguments from the user: `$ARGUMENTS`
 
+**Language:** write every message of this skill in English — confirmations, progress updates and results —
+whatever language the request is in.
+
 - **No run id:** `… waggle.mjs runs --limit 10`. Show a short table: id, kind (Full Scan / Quick Ask), status,
-  title, cost, when. Ask which one they want, unless the answer is obvious.
+  title, cost, when (use `createdLocal` — the machine's local time — not the UTC `createdAt`). With no runs at all,
+  name both ways to start: `/waggle:ask` for one question about the code, `/waggle:scan` for a full audit. Ask which one they want, unless the answer is obvious.
 - **A running run:** `… waggle.mjs status <id> --log 5`. Report the stage, cost so far against `capUsd`, and the
   console link. Offer to wait for it (background `wait`, as in the scan skill) or to stop it (`stop <id>`, only on
   an explicit request).

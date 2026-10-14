@@ -18,6 +18,9 @@ output fields: [CLI reference](${CLAUDE_PLUGIN_ROOT}/references/cli.md).
 
 Arguments from the user: `$ARGUMENTS`
 
+**Language:** write every message of this skill in English — confirmations, progress updates and results —
+whatever language the request is in.
+
 ## 1. Check the setup
 
 Run `… waggle.mjs doctor` (Bash timeout 300000 ms: the first run installs the engine, about a minute — tell the
@@ -65,9 +68,9 @@ they ask. Do not start without a yes.
 text in double quotes: inside double quotes the shell runs backticks and `$( … )`. Paths go in double quotes, with forward slashes on Windows ("C:/Users/me/repo"), so a trailing
 backslash cannot escape the closing quote.
 
-Run `… waggle.mjs scan --path "<dir>" --brief '<brief>'` (or `--repo <url>`). If the output has
-`telemetryNotice`, relay it to the user in one or two sentences, including how to turn it off
-(`… waggle.mjs telemetry off`). Give them the run id and the `consoleUrl` (they can watch it live in the browser).
+Run `… waggle.mjs scan --path "<dir>" --brief '<brief>'` (or `--repo <url>`). Mention telemetry only when a command's output contains `telemetryNotice` (that happens once, on first use):
+relay it in one or two sentences with how to turn it off (`… waggle.mjs telemetry off`). Do not bring
+telemetry up in any other reply. Give them the run id and the `consoleUrl` (they can watch it live in the browser).
 
 ## 5. Wait
 
@@ -91,6 +94,9 @@ Run `… waggle.mjs result <id>`. Then, in the user's language:
    what failed) or running the scan again.
 1. If `sinceLastScan` is present, this was an incremental re-scan: say against which earlier scan
    (`previousDate`), then the counts — fixed, new, still open (`persisting`), changed — and list the fixed ones.
+   A finding counts as fixed only with evidence (a targeted re-check confirmed it, it was ruled out, or its file
+   is gone). List `notCountedAsFixed` separately: `not-confirmed` means it was not raised again but nothing
+   confirmed a fix — say it may still be there and suggest checking it by hand or re-running the scan.
    Mark each finding below with its `change` (new / still open / changed).
 2. One line: how many findings by severity, how many ruled out, cost.
 3. The findings, most severe first: `id`, severity, the title, and the main evidence location. At most 10; say how

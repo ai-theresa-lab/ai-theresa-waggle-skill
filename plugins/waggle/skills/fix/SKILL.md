@@ -18,6 +18,9 @@ first — this skill edits code, so they matter most here.
 
 Arguments from the user: `$ARGUMENTS`
 
+**Language:** write every message of this skill in English — confirmations, progress updates and results —
+whatever language the request is in.
+
 ## 1. Load the plan
 
 - Find the run: the id from the arguments, or `… waggle.mjs runs --limit 10` and pick the latest complete Full Scan
