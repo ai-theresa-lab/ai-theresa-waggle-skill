@@ -4,7 +4,7 @@ description: "Work through an AI Theresa Waggle REMEDIATION.md: re-verify each f
 argument-hint: "[run id] [finding ids, e.g. F-01 F-03]"
 disable-model-invocation: true
 allowed-tools:
-  - Bash(node "${CLAUDE_PLUGIN_ROOT}/scripts/waggle.mjs" *)
+  - Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/waggle.mjs" *)
   - Read
   - Grep
   - Glob
@@ -13,7 +13,7 @@ allowed-tools:
 
 # Fix Waggle findings
 
-Launcher: `node "${CLAUDE_PLUGIN_ROOT}/scripts/waggle.mjs"`. Read [the safety rules](${CLAUDE_PLUGIN_ROOT}/references/safety.md)
+Launcher: `node "${CLAUDE_PLUGIN_ROOT}/bin/waggle.mjs"`. Read [the safety rules](${CLAUDE_PLUGIN_ROOT}/references/safety.md)
 first — this skill edits code, so they matter most here.
 
 Arguments from the user: `$ARGUMENTS`

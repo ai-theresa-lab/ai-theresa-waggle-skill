@@ -30,6 +30,6 @@ jobs:
           WAGGLE_HOME: ${{ runner.temp }}/waggle
           THERESA_TELEMETRY: '0'
         run: |
-          node plugins/waggle/scripts/waggle.mjs setup
-          node plugins/waggle/scripts/waggle.mjs doctor
-          node plugins/waggle/scripts/waggle.mjs server stop
+          node plugins/waggle/bin/waggle.mjs setup
+          node plugins/waggle/bin/waggle.mjs doctor
+          node plugins/waggle/bin/waggle.mjs server stop

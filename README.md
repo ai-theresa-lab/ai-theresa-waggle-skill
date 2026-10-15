@@ -7,7 +7,7 @@
 [AI Theresa Waggle](https://github.com/ai-theresa-lab/ai-theresa-waggle) to Claude Code as four skills: run a Full
 Scan, ask a cited question about the code, read the results, and work through the fixes on a branch.
 
-**Website:** [aitheresa.ai/diagnosis](https://aitheresa.ai/diagnosis/)
+**Website:** [aitheresa.ai/waggle](https://aitheresa.ai/waggle/)
 
 ## Install
 
@@ -70,10 +70,24 @@ questions, findings or keys. Turn it off with `THERESA_TELEMETRY=0` or by asking
 `waggle telemetry off`. The full field list is in the
 [engine README](https://github.com/ai-theresa-lab/ai-theresa-waggle#privacy-and-telemetry).
 
+## What the plugin runs, sends and fetches
+
+| What | Where it goes | When |
+|---|---|---|
+| Clone of one pinned engine release (commit checked) | `github.com/ai-theresa-lab/ai-theresa-waggle` → `~/.waggle/engine/<version>` | first use and each engine upgrade |
+| Engine dependencies, `npm ci --ignore-scripts` from its lockfile | `registry.npmjs.org` | same |
+| A background engine server | `127.0.0.1` only | while you use the skills |
+| Model calls with your `ANTHROPIC_API_KEY` or `claude` login (and `OPENAI_API_KEY` if set) | Anthropic (and OpenAI) | every Quick Ask / Full Scan |
+| The repository you name, when it is on GitHub | `github.com` | each scan of a public repository |
+| Anonymous usage telemetry (fields above) | `https://accel-scope-telemetry-355207447672.us-central1.run.app/v1/events` | after each run, unless turned off |
+
+The plugin itself is Markdown skills plus one launcher (`plugins/waggle/bin/waggle.mjs`, Node.js standard library
+only). It installs no hooks, no MCP servers and changes no Claude Code settings.
+
 ## How it works
 
 ```text
-/waggle:scan ──▶ scripts/waggle.mjs ──▶ Waggle engine (pinned release, ~/.waggle/engine)
+/waggle:scan ──▶ bin/waggle.mjs ──▶ Waggle engine (pinned release, ~/.waggle/engine)
                                           └─ local server in the background (127.0.0.1) ──▶ read-only Claude agents
 Claude polls `wait`, then reads `result` (findings.json, REMEDIATION.md, HTML reports) and summarizes it for you.
 ```
@@ -98,7 +112,7 @@ claude --plugin-dir ./plugins/waggle      # try the skills locally without insta
 claude plugin validate .                   # marketplace + plugin manifests
 ```
 
-To move to a new engine release, update `ENGINE` (tag and full commit) in `plugins/waggle/scripts/waggle.mjs`.
+To move to a new engine release, update `ENGINE` (tag and full commit) in `plugins/waggle/bin/waggle.mjs`.
 
 ## License
 

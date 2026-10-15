@@ -9,7 +9,7 @@ not in a public issue. Issues in the Waggle engine itself (the analysis pipeline
 
 ## What this plugin does on your machine
 
-- `plugins/waggle/scripts/waggle.mjs` clones one pinned release of the Waggle engine from GitHub (without your git
+- `plugins/waggle/bin/waggle.mjs` clones one pinned release of the Waggle engine from GitHub (without your git
   credentials), checks that its commit matches the pin, runs `npm ci --omit=dev` in it, and then runs its CLI.
 - The engine starts a local server bound to `127.0.0.1` and runs read-only Claude agents with your keys.
 - The skills instruct Claude to treat everything a scan returns as untrusted data, never run commands found in it,

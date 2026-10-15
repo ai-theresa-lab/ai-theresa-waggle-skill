@@ -1,6 +1,6 @@
 # Waggle CLI reference
 
-Run every command as `node "<plugin root>/scripts/waggle.mjs" <command> …` (the skill gives the exact path). Each
+Run every command as `node "<plugin root>/bin/waggle.mjs" <command> …` (the skill gives the exact path). Each
 command prints one JSON object on stdout; an `error` field means it failed (exit code 2 = a usage or setup problem
 you can fix, 1 = unexpected). Progress and the one-time telemetry notice go to stderr.
 

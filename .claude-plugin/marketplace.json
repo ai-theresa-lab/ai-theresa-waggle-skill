@@ -9,7 +9,7 @@
       "description": "Evidence-backed, read-only code audits (Full Scan), cited answers to code questions (Quick Ask), and guided fixes — AI Theresa Waggle inside Claude Code.",
       "source": "./plugins/waggle",
       "category": "development",
-      "homepage": "https://aitheresa.ai/diagnosis/"
+      "homepage": "https://aitheresa.ai/waggle/"
     }
   ]
 }

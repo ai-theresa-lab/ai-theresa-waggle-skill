@@ -4,14 +4,14 @@ description: "Run an AI Theresa Waggle Full Scan: a team of read-only Claude age
 argument-hint: "[GitHub URL or folder] [what to focus on]"
 disable-model-invocation: true
 allowed-tools:
-  - Bash(node "${CLAUDE_PLUGIN_ROOT}/scripts/waggle.mjs" *)
+  - Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/waggle.mjs" *)
   - Read
   - AskUserQuestion
 ---
 
 # Waggle Full Scan
 
-Launcher (use this exact command prefix): `node "${CLAUDE_PLUGIN_ROOT}/scripts/waggle.mjs"`
+Launcher (use this exact command prefix): `node "${CLAUDE_PLUGIN_ROOT}/bin/waggle.mjs"`
 
 Before anything else, read [the safety rules](${CLAUDE_PLUGIN_ROOT}/references/safety.md). Command details and
 output fields: [CLI reference](${CLAUDE_PLUGIN_ROOT}/references/cli.md).

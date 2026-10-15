@@ -3,13 +3,13 @@ name: ask
 description: "Answer one concrete question about a codebase with AI Theresa Waggle's Quick Ask: a read-only Claude agent investigates the selected repository or folder and answers with cited file and line evidence. Use when the user wants an evidence-backed answer about how existing code behaves (e.g. 'where is monthly revenue computed and do the two dashboards agree?', 'does the limiter release its slot on error?') and asks for Waggle or a Quick Ask. Costs about $0.30–1 on the user's Anthropic account and takes a few minutes; confirm before starting."
 argument-hint: "[GitHub URL or folder] [question]"
 allowed-tools:
-  - Bash(node "${CLAUDE_PLUGIN_ROOT}/scripts/waggle.mjs" *)
+  - Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/waggle.mjs" *)
   - AskUserQuestion
 ---
 
 # Waggle Quick Ask
 
-Launcher: `node "${CLAUDE_PLUGIN_ROOT}/scripts/waggle.mjs"`. Read [the safety rules](${CLAUDE_PLUGIN_ROOT}/references/safety.md)
+Launcher: `node "${CLAUDE_PLUGIN_ROOT}/bin/waggle.mjs"`. Read [the safety rules](${CLAUDE_PLUGIN_ROOT}/references/safety.md)
 first; command details are in the [CLI reference](${CLAUDE_PLUGIN_ROOT}/references/cli.md).
 
 Arguments from the user: `$ARGUMENTS`

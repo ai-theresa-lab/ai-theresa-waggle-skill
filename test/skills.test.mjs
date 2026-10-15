@@ -52,3 +52,26 @@ test('every skill replies in English by default and in Chinese only when asked i
     assert.doesNotMatch(text, /their language|user'?s language|in the user's/i, s);
   }
 });
+
+// Anthropic plugin directory requirements (claude.com/docs/plugins/pre-submission-checklist): the installed plugin
+// folder carries its own README (40+ words outside code blocks) and license, and a top-level bin/ keeps the listing
+// to Claude Code (chat and Cowork cannot run the engine).
+test('the plugin folder meets the directory checklist', () => {
+  const readme = readFileSync(join(ROOT, 'README.md'), 'utf8').replace(/```[\s\S]*?```/g, '');
+  assert.ok(readme.split(/\s+/).filter(Boolean).length >= 40, 'README of at least 40 words');
+  assert.match(readme, /accel-scope-telemetry-[\w.-]+\.run\.app/, 'README names the telemetry endpoint');
+  assert.ok(existsSync(join(ROOT, 'LICENSE')) && existsSync(join(ROOT, 'NOTICE')), 'LICENSE and NOTICE');
+  assert.equal(readFileSync(join(ROOT, 'LICENSE'), 'utf8'), readFileSync(join(ROOT, '..', '..', 'LICENSE'), 'utf8'));
+  assert.ok(existsSync(join(ROOT, 'bin', 'waggle.mjs')), 'launcher in bin/');
+  const manifest = JSON.parse(readFileSync(join(ROOT, '.claude-plugin', 'plugin.json'), 'utf8'));
+  assert.match(manifest.name, /^[a-z0-9]([a-z0-9-]{0,62}[a-z0-9])?$/);
+  for (const k of ['description', 'author', 'version', 'license', 'displayName']) assert.ok(manifest[k], k);
+  const bad = readdirSync(ROOT, { recursive: true }).filter((f) => /(^|[\/])(\.DS_Store|Thumbs\.db|desktop\.ini|__MACOSX)$/.test(f));
+  assert.deepEqual(bad, [], 'no OS junk files');
+});
+
+test('package.json and plugin.json carry the same version', () => {
+  const pkg = JSON.parse(readFileSync(join(ROOT, '..', '..', 'package.json'), 'utf8'));
+  const manifest = JSON.parse(readFileSync(join(ROOT, '.claude-plugin', 'plugin.json'), 'utf8'));
+  assert.equal(pkg.version, manifest.version);
+});
