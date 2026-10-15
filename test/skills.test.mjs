@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const ROOT = join(import.meta.dirname, '..', 'plugins', 'waggle');
+const ROOT = join(import.meta.dirname, '..', 'plugins', 'theresa-waggle');
 const SKILLS = readdirSync(join(ROOT, 'skills'));
 const ALLOWED_KEYS = new Set(['name', 'description', 'argument-hint', 'disable-model-invocation', 'allowed-tools']);
 

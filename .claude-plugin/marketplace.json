@@ -5,9 +5,9 @@
   "description": "Claude Code plugins from AI Theresa.",
   "plugins": [
     {
-      "name": "waggle",
+      "name": "theresa-waggle",
       "description": "Evidence-backed, read-only code audits (Full Scan), cited answers to code questions (Quick Ask), and guided fixes — AI Theresa Waggle inside Claude Code.",
-      "source": "./plugins/waggle",
+      "source": "./plugins/theresa-waggle",
       "category": "development",
       "homepage": "https://aitheresa.ai/waggle/"
     }

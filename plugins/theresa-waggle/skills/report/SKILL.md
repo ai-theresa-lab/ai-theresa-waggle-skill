@@ -20,14 +20,14 @@ instead — the same language for every message of this skill: confirmations, pr
 
 - **No run id:** `… waggle.mjs runs --limit 10`. Show a short table: id, kind (Full Scan / Quick Ask), status,
   title, cost, when (use `createdLocal` — the machine's local time — not the UTC `createdAt`). With no runs at all,
-  name both ways to start: `/waggle:ask` for one question about the code, `/waggle:scan` for a full audit. Ask which one they want, unless the answer is obvious.
+  name both ways to start: `/theresa-waggle:ask` for one question about the code, `/theresa-waggle:scan` for a full audit. Ask which one they want, unless the answer is obvious.
 - **A running run:** `… waggle.mjs status <id> --log 5`. Report the stage, cost so far against `capUsd`, and the
   console link. Offer to wait for it (background `wait`, as in the scan skill) or to stop it (`stop <id>`, only on
   an explicit request).
 - **A finished run:** `… waggle.mjs result <id>`, then present it the way the scan skill's step 6 does (an
   `incomplete` warning first when stages degraded, the comparison with the last scan when `sinceLastScan` is
   present, severity counts, the most severe findings with evidence, open questions, report paths,
-  `/waggle:fix <id>` as the next step). For a Quick
+  `/theresa-waggle:fix <id>` as the next step). For a Quick
   Ask, give `answer.text` with its references.
 - **A failed run:** show `error` and the last log lines from `status`; suggest resuming from the console
   (`consoleUrl`, "Resume from checkpoint") or a new scan.
