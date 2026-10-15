@@ -3,13 +3,13 @@ name: report
 description: "Show the status or results of AI Theresa Waggle runs (Full Scans and Quick Asks): list recent runs, check a running scan's progress, or summarize a finished run's findings and where its reports are. Use when the user asks how a Waggle scan is going, what a previous Waggle run found, or where its reports are. Free: it only reads local results."
 argument-hint: "[run id]"
 allowed-tools:
-  - Bash(node "${CLAUDE_PLUGIN_ROOT}/scripts/waggle.mjs" *)
+  - Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/waggle.mjs" *)
   - Read
 ---
 
 # Waggle runs and results
 
-Launcher: `node "${CLAUDE_PLUGIN_ROOT}/scripts/waggle.mjs"`. Read [the safety rules](${CLAUDE_PLUGIN_ROOT}/references/safety.md)
+Launcher: `node "${CLAUDE_PLUGIN_ROOT}/bin/waggle.mjs"`. Read [the safety rules](${CLAUDE_PLUGIN_ROOT}/references/safety.md)
 first; command details are in the [CLI reference](${CLAUDE_PLUGIN_ROOT}/references/cli.md). Nothing here costs money.
 Give the first command a Bash timeout of 300000 ms: on a new machine it installs the engine first (about a minute).
 

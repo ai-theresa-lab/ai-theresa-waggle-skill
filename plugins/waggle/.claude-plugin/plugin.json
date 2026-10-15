@@ -1,10 +1,20 @@
 {
   "name": "waggle",
-  "version": "0.1.4",
+  "displayName": "AI Theresa Waggle",
+  "version": "0.1.5",
   "description": "AI Theresa Waggle for Claude Code: evidence-backed, read-only audits of your code (Full Scan), cited answers to code questions (Quick Ask), and guided fixes from the resulting REMEDIATION.md.",
-  "author": { "name": "AI Theresa", "url": "https://aitheresa.ai" },
-  "homepage": "https://aitheresa.ai/diagnosis/",
+  "author": {
+    "name": "AI Theresa",
+    "url": "https://aitheresa.ai"
+  },
+  "homepage": "https://aitheresa.ai/waggle/",
   "repository": "https://github.com/ai-theresa-lab/ai-theresa-waggle-skill",
   "license": "Apache-2.0",
-  "keywords": ["audit", "code-review", "security", "diagnosis", "remediation"]
+  "keywords": [
+    "audit",
+    "code-review",
+    "security",
+    "diagnosis",
+    "remediation"
+  ]
 }
