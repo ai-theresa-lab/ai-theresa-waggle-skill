@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { ENGINE, engineDir, engineReady, nodeOk, waggleHome } from '../plugins/waggle/bin/waggle.mjs';
+import { ENGINE, engineDir, engineReady, nodeOk, waggleHome } from '../plugins/theresa-waggle/bin/waggle.mjs';
 
 test('the engine pin is a release tag and a full commit hash', () => {
   assert.match(ENGINE.tag, /^v\d+\.\d+\.\d+$/);
@@ -36,7 +36,7 @@ test('engineReady needs the install marker for the pinned commit, node_modules a
 });
 
 test('pruneOldEngines removes other versions and stale temp dirs, keeps the pinned one and a live server\'s', async () => {
-  const { pruneOldEngines } = await import('../plugins/waggle/bin/waggle.mjs');
+  const { pruneOldEngines } = await import('../plugins/theresa-waggle/bin/waggle.mjs');
   const home = mkdtempSync(join(tmpdir(), 'waggle-home-'));
   try {
     const root = join(home, 'engine');

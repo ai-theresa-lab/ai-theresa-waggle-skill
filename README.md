@@ -15,21 +15,25 @@ Requirements: [Claude Code](https://code.claude.com), Node.js 22.7+ and git.
 
 ```text
 /plugin marketplace add ai-theresa-lab/ai-theresa-waggle-skill
-/plugin install waggle@ai-theresa
+/plugin install theresa-waggle@ai-theresa
 ```
 
 (or from a terminal: `claude plugin marketplace add ai-theresa-lab/ai-theresa-waggle-skill` and
-`claude plugin install waggle@ai-theresa`). The first command you run installs the Waggle engine — a pinned,
+`claude plugin install theresa-waggle@ai-theresa`). The first command you run installs the Waggle engine — a pinned,
 verified release — into `~/.waggle/engine`; that takes about a minute, once.
+
+**Upgrading from 0.1.4 or earlier:** the plugin was renamed from `waggle` to `theresa-waggle` (the commands are now
+`/theresa-waggle:…`). Run `/plugin marketplace update ai-theresa`, `/plugin uninstall waggle@ai-theresa` and
+`/plugin install theresa-waggle@ai-theresa`. Your runs and reports in `~/.waggle` are kept.
 
 ## Skills
 
 | Skill | What it does | Cost |
 |---|---|---|
-| `/waggle:scan [repo or folder] [focus]` | A **Full Scan**: lenses chosen for your system pose falsifiable problems, measure them against the code, an adversarial audit re-checks every claim, and only evidence-backed findings reach the reports. 20–40 minutes, in the background. | $5–30 on your Anthropic account |
-| `/waggle:ask [repo or folder] [question]` | A **Quick Ask**: one agent answers one concrete question with file-and-line evidence. Claude may also offer it when you ask how existing code behaves. | $0.30–1 |
-| `/waggle:report [run id]` | Progress of a running scan, or the findings and report locations of a finished one. | free |
-| `/waggle:fix [run id] [finding ids]` | Works through the scan's `REMEDIATION.md`: re-verifies each finding against the current code, fixes the confirmed ones on a `waggle/fix-…` branch, one commit per finding, running your tests — asking you before each step. | your normal Claude Code usage |
+| `/theresa-waggle:scan [repo or folder] [focus]` | A **Full Scan**: lenses chosen for your system pose falsifiable problems, measure them against the code, an adversarial audit re-checks every claim, and only evidence-backed findings reach the reports. 20–40 minutes, in the background. | $5–30 on your Anthropic account |
+| `/theresa-waggle:ask [repo or folder] [question]` | A **Quick Ask**: one agent answers one concrete question with file-and-line evidence. Claude may also offer it when you ask how existing code behaves. | $0.30–1 |
+| `/theresa-waggle:report [run id]` | Progress of a running scan, or the findings and report locations of a finished one. | free |
+| `/theresa-waggle:fix [run id] [finding ids]` | Works through the scan's `REMEDIATION.md`: re-verifies each finding against the current code, fixes the confirmed ones on a `waggle/fix-…` branch, one commit per finding, running your tests — asking you before each step. | your normal Claude Code usage |
 
 Scanning the same repository or folder again is incremental: only what changed is re-analysed, and the result
 says which findings are fixed, new or still open. `scan` and `fix` only run when you invoke them. Every scan asks for your go-ahead with its cost and cap first.
@@ -46,13 +50,13 @@ Waggle runs its own Claude agents on **your** Anthropic account:
   the same usage limits as your Claude Code sessions).
 - Optional `OPENAI_API_KEY`: report writing and quality checks try OpenAI first and fall back to Claude.
 
-Each run has a spend cap (default $20, `/waggle:scan` shows it and can change it on request). The cap stops a run
+Each run has a spend cap (default $20, `/theresa-waggle:scan` shows it and can change it on request). The cap stops a run
 from starting new work; the final report and audit steps always finish, so a run can end up to about a third over it.
 
 ## Safety
 
 - **Read-only.** Waggle's agents can only read and search the scanned code — no shell, no writes, no network — and a
-  scan never changes your repository. Only `/waggle:fix` edits code, on a separate branch, with your approval.
+  scan never changes your repository. Only `/theresa-waggle:fix` edits code, on a separate branch, with your approval.
 - **Scanned code is untrusted.** Code can contain text aimed at AI assistants. The CLI marks everything that comes
   from a scan as `untrusted`, bounds its length and strips control characters, and the skills tell Claude to show
   it, never follow it. Our release checks include a repository seeded with such instructions.
@@ -81,13 +85,13 @@ questions, findings or keys. Turn it off with `THERESA_TELEMETRY=0` or by asking
 | The repository you name, when it is on GitHub | `github.com` | each scan of a public repository |
 | Anonymous usage telemetry (fields above) | `https://accel-scope-telemetry-355207447672.us-central1.run.app/v1/events` | after each run, unless turned off |
 
-The plugin itself is Markdown skills plus one launcher (`plugins/waggle/bin/waggle.mjs`, Node.js standard library
+The plugin itself is Markdown skills plus one launcher (`plugins/theresa-waggle/bin/waggle.mjs`, Node.js standard library
 only). It installs no hooks, no MCP servers and changes no Claude Code settings.
 
 ## How it works
 
 ```text
-/waggle:scan ──▶ bin/waggle.mjs ──▶ Waggle engine (pinned release, ~/.waggle/engine)
+/theresa-waggle:scan ──▶ bin/waggle.mjs ──▶ Waggle engine (pinned release, ~/.waggle/engine)
                                           └─ local server in the background (127.0.0.1) ──▶ read-only Claude agents
 Claude polls `wait`, then reads `result` (findings.json, REMEDIATION.md, HTML reports) and summarizes it for you.
 ```
@@ -102,17 +106,17 @@ code as the open-source web app; this plugin adds no analysis logic of its own.
 - From the skills: public GitHub repositories and local folders. Private GitHub repositories, warehouses and other
   data sources are available in the [web console](https://github.com/ai-theresa-lab/ai-theresa-waggle#connectors).
 - Findings are produced by language models and verified against the code, but they can still be wrong; every
-  finding carries its evidence and a "how to verify" step, and `/waggle:fix` re-checks each one before changing code.
+  finding carries its evidence and a "how to verify" step, and `/theresa-waggle:fix` re-checks each one before changing code.
 
 ## Development
 
 ```bash
 npm test                                   # launcher + skill structure checks
-claude --plugin-dir ./plugins/waggle      # try the skills locally without installing
+claude --plugin-dir ./plugins/theresa-waggle      # try the skills locally without installing
 claude plugin validate .                   # marketplace + plugin manifests
 ```
 
-To move to a new engine release, update `ENGINE` (tag and full commit) in `plugins/waggle/bin/waggle.mjs`.
+To move to a new engine release, update `ENGINE` (tag and full commit) in `plugins/theresa-waggle/bin/waggle.mjs`.
 
 ## License
 

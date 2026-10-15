@@ -65,6 +65,6 @@ Never push, open a pull request, or merge unless the user asks.
 
 ## 5. Wrap up
 
-Summarize: fixed (with commits), skipped (and why), left for later. Suggest a follow-up `/waggle:scan` of the same
+Summarize: fixed (with commits), skipped (and why), left for later. Suggest a follow-up `/theresa-waggle:scan` of the same
 target: Waggle re-scans incrementally and reports each finding as fixed, still open, or new — a finding is only
 called fixed when its code actually changed.
