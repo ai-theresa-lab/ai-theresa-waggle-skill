@@ -11,7 +11,7 @@ with file-and-line evidence reach you. This plugin brings the open-source
 
 | Skill | What it does | Cost (your Anthropic account) |
 |---|---|---|
-| `/theresa-waggle:scan [repo or folder] [focus]` | Full Scan: a team of read-only agents audits the code (security, architecture, release engineering, business logic and more), 20–40 minutes in the background. Asks for your go-ahead with its cost and cap first. | typically $5–30, capped (default $20) |
+| `/theresa-waggle:scan [repo or folder] [focus]` | Full Scan: a team of read-only agents audits the code (security, architecture, release engineering, business logic and more), usually 20–60 minutes in the background. Asks for your go-ahead with its cost and cap first. | typically $5–30, capped (default $20) |
 | `/theresa-waggle:ask [repo or folder] [question]` | Quick Ask: one agent answers one concrete question with cited evidence. | about $0.30–1 |
 | `/theresa-waggle:report [run id]` | Progress of a running scan, or the findings and report locations of a finished one. | free |
 | `/theresa-waggle:fix [run id] [finding ids]` | Re-verifies each finding against the current code and fixes the confirmed ones on a `waggle/fix-…` branch, one commit per finding, asking before each step. | your normal Claude Code usage |
@@ -37,7 +37,7 @@ Each scan writes a Leadership brief, an Execution report and a `REMEDIATION.md` 
   OS / CPU architecture / Node.js major version, the run type and outcome, the hour it ran, duration, a coarse cost
   range, finding counts, the built-in lenses, source kinds and stages that degraded, and which kind of key was used
   (for example "claude-subscription"). Never code, repository names, paths, questions, findings or keys. Turn it off
-  with `THERESA_TELEMETRY=0` or by running `waggle telemetry off` through the plugin.
+  by asking Claude ("turn off Waggle telemetry") or with `THERESA_TELEMETRY=0`.
 - **Edits code only in `/theresa-waggle:fix`**, on a separate branch, with your approval at each step; it never pushes.
 
 Scanned code is treated as untrusted data: everything the CLI returns from a scan is marked `untrusted`, and the

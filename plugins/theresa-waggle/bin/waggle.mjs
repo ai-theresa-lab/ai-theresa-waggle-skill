@@ -10,7 +10,7 @@
 // `npm ci`. A clone whose commit does not match the pin is refused. Plain JavaScript, Node.js standard library only.
 
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -87,23 +87,28 @@ function install() {
   // LOCK_STALE_MS is taken over instead of blocking every later command.
   try { if (Date.now() - statSync(lock).mtimeMs > LOCK_STALE_MS) rmSync(lock, { recursive: true, force: true }); } catch { /* no lock */ }
   try { mkdirSync(lock); } catch { throw new Error(`another Waggle engine install is in progress (started less than 15 minutes ago); wait for it and retry`); }
-  const tmp = `${dir}.tmp-${process.pid}`;   // same parent as `dir`, so the final rename never crosses drives
+  // Install in place; the marker written last is what makes the folder count as installed (engineReady), so an
+  // interrupted install is simply redone. No folder rename: on Windows a rename fails while antivirus, OneDrive or
+  // an editor's file watcher has a file in the new node_modules open, and some of those never let go.
+  let ok = false;
   try {
+    try { rmSync(dir, { recursive: true, force: true }); } catch (e) {
+      throw new Error(`could not replace the old engine in ${dir} (${e?.code ?? e}): stop the Waggle server (\`server stop\`) or close what has that folder open, and retry`);
+    }
     note(`installing the Waggle engine ${ENGINE.tag} (one time, about a minute) …`);
-    const clone = git(['clone', '--quiet', '--depth', '1', '--branch', ENGINE.tag, ENGINE.repo, tmp]);
+    const clone = git(['clone', '--quiet', '--depth', '1', '--branch', ENGINE.tag, ENGINE.repo, dir]);
     if (clone.status !== 0) throw new Error(`git clone failed: ${(clone.stderr || '').trim().slice(0, 400)}`);
-    const head = git(['-C', tmp, 'rev-parse', 'HEAD']).stdout.trim();
+    const head = git(['-C', dir, 'rev-parse', 'HEAD']).stdout.trim();
     if (head !== ENGINE.commit) throw new Error(`engine ${ENGINE.tag} is at ${head}, expected ${ENGINE.commit} — refusing to run an unexpected build`);
     // --ignore-scripts: no dependency's install script runs (none needs one); the lockfile pins every package by hash.
-    const ci = npm(['ci', '--omit=dev', '--ignore-scripts', '--no-audit', '--no-fund', '--loglevel=error'], tmp);
+    const ci = npm(['ci', '--omit=dev', '--ignore-scripts', '--no-audit', '--no-fund', '--loglevel=error'], dir);
     if (ci.status !== 0) throw new Error(`npm ci failed: ${(ci.stderr || ci.stdout || '').trim().slice(-600)}`);
-    writeFileSync(join(tmp, '.waggle-install.json'), JSON.stringify({ version: ENGINE.version, commit: head, installedAt: new Date().toISOString() }));
-    rmSync(dir, { recursive: true, force: true });
-    renameSync(tmp, dir);
+    writeFileSync(join(dir, '.waggle-install.json'), JSON.stringify({ version: ENGINE.version, commit: head, installedAt: new Date().toISOString() }));
+    ok = true;
     pruneOldEngines();
     return { installed: true, dir };
   } finally {
-    rmSync(tmp, { recursive: true, force: true });
+    if (!ok) try { rmSync(dir, { recursive: true, force: true }); } catch { /* the next install retries */ }
     rmSync(lock, { recursive: true, force: true });
   }
 }

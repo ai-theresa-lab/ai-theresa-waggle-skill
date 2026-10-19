@@ -1,6 +1,6 @@
 ---
 name: scan
-description: "Run an AI Theresa Waggle Full Scan: a team of read-only Claude agents audits a codebase (security, architecture, release engineering, business logic and more), verifies every claim against the code, and returns an evidence-backed Leadership brief, an Execution report and a REMEDIATION.md. Takes 20–40 minutes and bills the user's Anthropic account (typically $5–30), so it runs only when the user asks for it."
+description: "Run an AI Theresa Waggle Full Scan: a team of read-only Claude agents audits a codebase (security, architecture, release engineering, business logic and more), verifies every claim against the code, and returns an evidence-backed Leadership brief, an Execution report and a REMEDIATION.md. Usually takes 20–60 minutes and bills the user's Anthropic account (typically $5–30), so it runs only when the user asks for it."
 argument-hint: "[GitHub URL or folder] [what to focus on]"
 disable-model-invocation: true
 allowed-tools:
@@ -37,7 +37,8 @@ user). Then:
 
 Work out what to scan:
 
-- A GitHub URL (or `owner/repo`) → `--repo`. Only public repositories are supported from the skill.
+- A GitHub URL (or `owner/repo`) → `--repo`. Only public repositories are supported this way; for a private one,
+  ask the user to clone it (or use their existing clone) and scan that folder with `--path`.
 - A local folder → `--path` (absolute path). It must be, or contain, a git repository.
 - Nothing given → propose the current project's git root (`--path`), and confirm it.
 
@@ -55,7 +56,9 @@ Run `… waggle.mjs budget` and tell the user, in one short message:
 - it bills their Anthropic account (with a `claude` subscription login it uses the same limits as this chat);
 - typical cost $5–30 (a re-scan of unchanged or lightly changed code costs much less); the per-run cap is
   `capUsd`, and a run can end up to about a third over it;
-- it takes 20–40 minutes and runs in the background; they can keep working;
+- it usually takes 20–60 minutes (longer for large codebases) and runs in the background; they can keep working;
+- if `doctor` showed `keys.openai: true`: report writing and quality checks use their OpenAI key first (billed to
+  their OpenAI account), falling back to Claude; unsetting `OPENAI_API_KEY` keeps everything on Anthropic;
 - the scan is read-only: nothing in their code changes.
 
 Use AskUserQuestion: start / change the cap first / cancel. Only change the cap (`… waggle.mjs budget <USD>`) if
@@ -69,8 +72,8 @@ text in double quotes: inside double quotes the shell runs backticks and `$( …
 backslash cannot escape the closing quote.
 
 Run `… waggle.mjs scan --path "<dir>" --brief '<brief>'` (or `--repo <url>`). Mention telemetry only when a command's output contains `telemetryNotice` (that happens once, on first use):
-relay it in one or two sentences with how to turn it off (`… waggle.mjs telemetry off`). Do not bring
-telemetry up in any other reply. Give them the run id and the `consoleUrl` (they can watch it live in the browser).
+relay it in one or two sentences and say how to turn it off: ask Claude to turn off Waggle telemetry, or set
+`THERESA_TELEMETRY=0`. Do not show the launcher command for it. Do not bring telemetry up in any other reply. Give them the run id and the `consoleUrl` (they can watch it live in the browser).
 
 ## 5. Wait
 

@@ -1,6 +1,6 @@
 ---
 name: report
-description: "Show the status or results of AI Theresa Waggle runs (Full Scans and Quick Asks): list recent runs, check a running scan's progress, or summarize a finished run's findings and where its reports are. Use when the user asks how a Waggle scan is going, what a previous Waggle run found, or where its reports are. Free: it only reads local results."
+description: "Show the status or results of AI Theresa Waggle runs (Full Scans and Quick Asks): list recent runs, check a running scan's progress, or summarize a finished run's findings and where its reports are. Use when the user asks how a Waggle scan is going, what a previous Waggle run found, or where its reports are, or wants Waggle's anonymous telemetry turned off or on. Free: it only reads local results. A new Full Scan or a fix session is started only by the user typing /theresa-waggle:scan or /theresa-waggle:fix: suggest the command, never run those skills' steps yourself."
 argument-hint: "[run id]"
 allowed-tools:
   - Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/waggle.mjs" *)
@@ -29,6 +29,9 @@ instead — the same language for every message of this skill: confirmations, pr
   present, severity counts, the most severe findings with evidence, open questions, report paths,
   `/theresa-waggle:fix <id>` as the next step). For a Quick
   Ask, give `answer.text` with its references.
+- **Telemetry:** when the user asks to turn Waggle's anonymous telemetry off (or back on), run
+  `… waggle.mjs telemetry off` (or `on`) and confirm the new state in one line. To change it again they can just ask
+  you; do not show them the launcher command.
 - **A failed run:** show `error` and the last log lines from `status`; suggest resuming from the console
   (`consoleUrl`, "Resume from checkpoint") or a new scan.
 
