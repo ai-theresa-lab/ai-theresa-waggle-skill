@@ -1,7 +1,7 @@
 {
   "name": "theresa-waggle",
   "displayName": "AI Theresa Waggle",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "AI Theresa Waggle for Claude Code: evidence-backed, read-only audits of your code (Full Scan), cited answers to code questions (Quick Ask), and guided fixes from the resulting REMEDIATION.md.",
   "author": {
     "name": "AI Theresa",

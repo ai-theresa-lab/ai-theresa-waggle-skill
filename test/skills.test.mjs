@@ -61,7 +61,8 @@ test('the plugin folder meets the directory checklist', () => {
   assert.ok(readme.split(/\s+/).filter(Boolean).length >= 40, 'README of at least 40 words');
   assert.match(readme, /accel-scope-telemetry-[\w.-]+\.run\.app/, 'README names the telemetry endpoint');
   assert.ok(existsSync(join(ROOT, 'LICENSE')) && existsSync(join(ROOT, 'NOTICE')), 'LICENSE and NOTICE');
-  assert.equal(readFileSync(join(ROOT, 'LICENSE'), 'utf8'), readFileSync(join(ROOT, '..', '..', 'LICENSE'), 'utf8'));
+  const text = (f) => readFileSync(f, 'utf8').replace(/\r\n/g, '\n');  // git may check either copy out with CRLF
+  assert.equal(text(join(ROOT, 'LICENSE')), text(join(ROOT, '..', '..', 'LICENSE')));
   assert.ok(existsSync(join(ROOT, 'bin', 'waggle.mjs')), 'launcher in bin/');
   const manifest = JSON.parse(readFileSync(join(ROOT, '.claude-plugin', 'plugin.json'), 'utf8'));
   assert.match(manifest.name, /^[a-z0-9]([a-z0-9-]{0,62}[a-z0-9])?$/);

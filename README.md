@@ -9,6 +9,9 @@ Scan, ask a cited question about the code, read the results, and work through th
 
 **Website:** [aitheresa.ai/waggle](https://aitheresa.ai/waggle/)
 
+*Waggle* is the audit engine (open source, runs on your machine); **theresa-waggle** is this plugin, which installs
+the engine and drives it from Claude Code. Everything Waggle keeps (engine, runs, reports) lives in `~/.waggle`.
+
 ## Install
 
 Requirements: [Claude Code](https://code.claude.com), Node.js 22.7+ and git.
@@ -22,21 +25,19 @@ Requirements: [Claude Code](https://code.claude.com), Node.js 22.7+ and git.
 `claude plugin install theresa-waggle@ai-theresa`). The first command you run installs the Waggle engine — a pinned,
 verified release — into `~/.waggle/engine`; that takes about a minute, once.
 
-**Upgrading from 0.1.4 or earlier:** the plugin was renamed from `waggle` to `theresa-waggle` (the commands are now
-`/theresa-waggle:…`). Run `/plugin marketplace update ai-theresa`, `/plugin uninstall waggle@ai-theresa` and
-`/plugin install theresa-waggle@ai-theresa`. Your runs and reports in `~/.waggle` are kept.
-
 ## Skills
 
 | Skill | What it does | Cost |
 |---|---|---|
-| `/theresa-waggle:scan [repo or folder] [focus]` | A **Full Scan**: lenses chosen for your system pose falsifiable problems, measure them against the code, an adversarial audit re-checks every claim, and only evidence-backed findings reach the reports. 20–40 minutes, in the background. | $5–30 on your Anthropic account |
+| `/theresa-waggle:scan [repo or folder] [focus]` | A **Full Scan**: lenses chosen for your system pose falsifiable problems, measure them against the code, an adversarial audit re-checks every claim, and only evidence-backed findings reach the reports. Usually 20–60 minutes, in the background. | $5–30 on your Anthropic account |
 | `/theresa-waggle:ask [repo or folder] [question]` | A **Quick Ask**: one agent answers one concrete question with file-and-line evidence. Claude may also offer it when you ask how existing code behaves. | $0.30–1 |
 | `/theresa-waggle:report [run id]` | Progress of a running scan, or the findings and report locations of a finished one. | free |
 | `/theresa-waggle:fix [run id] [finding ids]` | Works through the scan's `REMEDIATION.md`: re-verifies each finding against the current code, fixes the confirmed ones on a `waggle/fix-…` branch, one commit per finding, running your tests — asking you before each step. | your normal Claude Code usage |
 
 Scanning the same repository or folder again is incremental: only what changed is re-analysed, and the result
-says which findings are fixed, new or still open. `scan` and `fix` only run when you invoke them. Every scan asks for your go-ahead with its cost and cap first.
+says which findings are fixed, new or still open. `scan` and `fix` only run when you type them: Claude will not start a
+paid scan or edit code on its own, it suggests the command instead. Every scan asks for your go-ahead with its cost
+and cap first.
 
 A scan produces the same reports as the Waggle web console: a short **Leadership brief**, a detailed **Execution
 report**, and a `REMEDIATION.md` for a coding agent — saved under `~/.waggle/data/results/<run id>/`. Each run also
@@ -48,7 +49,9 @@ Waggle runs its own Claude agents on **your** Anthropic account:
 
 - `ANTHROPIC_API_KEY` in the environment, or an existing `claude` login (a Claude subscription — then scans draw on
   the same usage limits as your Claude Code sessions).
-- Optional `OPENAI_API_KEY`: report writing and quality checks try OpenAI first and fall back to Claude.
+- `OPENAI_API_KEY`, **if it is set**: report writing and quality checks then use OpenAI first (billed to your OpenAI
+  account) and fall back to Claude. The scan's cost confirmation tells you when this applies; unset the variable to
+  keep everything on Anthropic.
 
 Each run has a spend cap (default $20, `/theresa-waggle:scan` shows it and can change it on request). The cap stops a run
 from starting new work; the final report and audit steps always finish, so a run can end up to about a third over it.
@@ -70,8 +73,8 @@ See [SECURITY.md](SECURITY.md) to report a vulnerability.
 Your code, questions and reports stay on your machine and go only to the model providers whose keys you use. The
 engine sends **anonymous usage telemetry** (on by default; the first scan tells you so): run type, duration, a
 coarse cost range, finding counts, the built-in lenses and source kinds used — never code, repository names, paths,
-questions, findings or keys. Turn it off with `THERESA_TELEMETRY=0` or by asking Claude to run
-`waggle telemetry off`. The full field list is in the
+questions, findings or keys. Turn it off by asking Claude ("turn off Waggle telemetry") or with
+`THERESA_TELEMETRY=0`. The full field list is in the
 [engine README](https://github.com/ai-theresa-lab/ai-theresa-waggle#privacy-and-telemetry).
 
 ## What the plugin runs, sends and fetches
@@ -103,10 +106,17 @@ code as the open-source web app; this plugin adds no analysis logic of its own.
 
 - Claude Code only (the engine needs Node.js, git and network access, which claude.ai and API skill sandboxes do not
   provide).
-- From the skills: public GitHub repositories and local folders. Private GitHub repositories, warehouses and other
-  data sources are available in the [web console](https://github.com/ai-theresa-lab/ai-theresa-waggle#connectors).
+- From the skills: public GitHub repositories and local folders. For a **private repository**, clone it and scan the
+  folder. Warehouses and other data sources need the engine's own web app
+  ([connectors](https://github.com/ai-theresa-lab/ai-theresa-waggle#connectors)).
 - Findings are produced by language models and verified against the code, but they can still be wrong; every
   finding carries its evidence and a "how to verify" step, and `/theresa-waggle:fix` re-checks each one before changing code.
+
+## Upgrading
+
+`/plugin marketplace update ai-theresa` picks up new releases. **From 0.1.4 or earlier:** the plugin was renamed
+from `waggle` to `theresa-waggle` (the commands are now `/theresa-waggle:…`): run `/plugin uninstall waggle@ai-theresa`
+and `/plugin install theresa-waggle@ai-theresa`. Your runs and reports in `~/.waggle` are kept.
 
 ## Development
 
