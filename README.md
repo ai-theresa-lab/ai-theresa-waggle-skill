@@ -114,7 +114,10 @@ code as the open-source web app; this plugin adds no analysis logic of its own.
 
 ## Upgrading
 
-`/plugin marketplace update ai-theresa` picks up new releases. **From 0.1.4 or earlier:** the plugin was renamed
+To get a new release: in `/plugin`, open **Marketplaces**, select `ai-theresa` and choose **Update marketplace**, or
+from a terminal run `claude plugin marketplace update ai-theresa` and then `claude plugin update theresa-waggle@ai-theresa`
+(updating the marketplace alone only refreshes its listing). Auto-update is off by default for marketplaces outside
+Anthropic's; you can turn it on for `ai-theresa` on the same **Marketplaces** tab. **From 0.1.4 or earlier:** the plugin was renamed
 from `waggle` to `theresa-waggle` (the commands are now `/theresa-waggle:…`): run `/plugin uninstall waggle@ai-theresa`
 and `/plugin install theresa-waggle@ai-theresa`. Your runs and reports in `~/.waggle` are kept.
 
